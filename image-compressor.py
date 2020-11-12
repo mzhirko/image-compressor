@@ -5,6 +5,17 @@ import matplotlib.pylab as plt
 
 from PIL import Image
 
+
+# def normalize_matrix counts adaptive learning step
+def adaptive_learning_step(matrix):
+    tmp = np.dot(matrix, np.transpose(matrix))
+    s = 0
+    for i_f in range(len(tmp)):
+        s += tmp[i_f]
+
+    return 1.0 / (s * 10)
+
+
 # loading image
 image = Image.open("mrz3.jpg")
 pix = image.load()
@@ -82,6 +93,7 @@ while E > 1000:
         alpha_first = adaptive_learning_step(Xq[k])
         # print(alpha_first)
         W_first = W_first - alpha_first * np.dot(np.dot(np.transpose(Xq[k]), X_delta[k]),  np.transpose(W_second))
+
 
         Y = np.dot(Xq[k], W_first)
         X_out[k] = np.dot(Y, W_second)
