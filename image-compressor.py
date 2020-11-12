@@ -16,6 +16,17 @@ def adaptive_learning_step(matrix):
     return 1.0 / (s * 10)
 
 
+# def normalize_matrix normalizes given matrix
+def normalize_matrix(matrix):
+    for i_f in range(len(matrix[0])):
+        s = 0
+        for j_f in range(len(matrix)):
+            s += matrix[j_f][i_f] * matrix[j_f][i_f]
+        s = math.sqrt(s)
+        for j_f in range(len(matrix)):
+            matrix[j_f][i_f] = matrix[j_f][i_f] / s
+
+
 # loading image
 image = Image.open("mrz3.jpg")
 pix = image.load()
@@ -94,6 +105,9 @@ while E > 1000:
         # print(alpha_first)
         W_first = W_first - alpha_first * np.dot(np.dot(np.transpose(Xq[k]), X_delta[k]),  np.transpose(W_second))
 
+        # normalizing matrices
+        normalize_matrix(W_first)
+        normalize_matrix(W_second)
 
         Y = np.dot(Xq[k], W_first)
         X_out[k] = np.dot(Y, W_second)
