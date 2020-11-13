@@ -123,3 +123,21 @@ while E > 1000:
     print("Iteration number: {}, error {}".format(iteration_counter, E))
 
 print("Final iteration count: {}, final error {}".format(iteration_counter, E))
+
+# compression ratio
+Z = (N * L) / ((N + L) * p + 2)
+
+print("Compression ratio".format(Z))
+
+# showing original image
+fig = plt.figure()
+
+fig.add_subplot(1, 2, 1)
+plt.title("Original Image")
+plt.imshow(image_origin.astype(np.int32))
+
+# showing restored image
+fig.add_subplot(1, 2, 2)
+plt.title("Reconstructed Image")
+plt.imshow(image_restored.astype(np.int32))
+plt.show()
