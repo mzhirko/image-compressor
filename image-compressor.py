@@ -123,3 +123,36 @@ while E > 1000:
     print("Iteration number: {}, error {}".format(iteration_counter, E))
 
 print("Final iteration count: {}, final error {}".format(iteration_counter, E))
+
+# removing unnecessary axis from arrays
+Xq = np.squeeze(Xq, axis=1)
+X_out = np.squeeze(X_out, axis=1)
+# Creating image matrix from X_out
+le = H / n
+for h in range(0, H, n):
+    for w in range(0, W, m):
+        xq = Xq[int((h / n) * le + (w / m))]
+        x_out = X_out[int((h / n) * le + (w / m))]
+        for j in range(n):
+            for k in range(m):
+                for i in range(S):  # rgb
+                    image_restored[j + h, k + w, i] = (x_out[i + S * (j + k * n)] + 1) * c_max / 2
+                    image_origin[j + h, k + w, i] = (xq[i + S * (j + k * n)] + 1) * c_max / 2
+
+# compression ratio
+Z = (N * L) / ((N + L) * p + 2)
+
+print("Compression ratio".format(Z))
+
+# showing original image
+fig = plt.figure()
+
+fig.add_subplot(1, 2, 1)
+plt.title("Original Image")
+plt.imshow(image_origin.astype(np.int32))
+
+# showing restored image
+fig.add_subplot(1, 2, 2)
+plt.title("Reconstructed Image")
+plt.imshow(image_restored.astype(np.int32))
+plt.show()
