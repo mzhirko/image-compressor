@@ -36,9 +36,13 @@ S = 3
 c_max = 255
 H = image.height
 W = image.width
+
+# setting variables
+p = N // 2
 n = m = 4
 N = n * m * S
 L = int(H / n * W / m)
+
 Xq = []
 
 # divide on squares
@@ -54,9 +58,6 @@ for h in range(0, H, n):
 
         Xq.append(Xqhw)
 
-# setting variables
-p = N // 2
-e = p * 150
 
 # initialize matrices
 W_first = np.empty((N, p))
@@ -82,7 +83,7 @@ W_second = np.transpose(W_first)
 
 iteration_counter = 0
 E = 10000000
-while E > 1000:
+while E > 100:
     E = 0
 
     for k in range(L):
