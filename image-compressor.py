@@ -28,21 +28,21 @@ def normalize_matrix(matrix):
 
 
 # loading image
-image = Image.open("mrz3.jpg")
+image = Image.open("mrz.jpg")
+image.show()
 pix = image.load()
-
-# setting image parameters
-S = 3
-c_max = 255
 H = image.height
 W = image.width
+print("Result for mrz.jpg {}x{}".format(H, W))
 
-# setting variables
-p = N // 2
-n = m = 4
+
+# setting image parameters
+
+S = 3
+c_max = 255
+n = m = 8
 N = n * m * S
 L = int(H / n * W / m)
-
 Xq = []
 
 # divide on squares
@@ -59,15 +59,17 @@ for h in range(0, H, n):
         Xq.append(Xqhw)
 
 
+# setting variables
+p = N // 4
+e = p * 150
+
+print((N * L) / ((N + L) * p + 2))
+
 # initialize matrices
 W_first = np.empty((N, p))
 W_second = np.empty((p, N))
 X_out = np.empty((L, N))
 X_delta = np.empty((L, N))
-
-p = N // 3
-
-print((N * L) / ((N + L) * p + 2))
 
 # adding axis to array (for easier matrix transposing)
 Xq = np.expand_dims(Xq, axis=1)
@@ -82,7 +84,7 @@ for i in range(N):
 W_second = np.transpose(W_first)
 
 iteration_counter = 0
-E = 10000000
+E = 1000000
 while E > 100:
     E = 0
 
@@ -110,9 +112,9 @@ while E > 100:
         normalize_matrix(W_first)
         normalize_matrix(W_second)
 
-        Y = np.dot(Xq[k], W_first)
-        X_out[k] = np.dot(Y, W_second)
-        X_delta[k] = X_out[k] - Xq[k]
+        # Y = np.dot(Xq[k], W_first)
+        # X_out[k] = np.dot(Y, W_second)
+        # X_delta[k] = X_out[k] - Xq[k]
 
         # counting error
         for i in range(N):
@@ -124,6 +126,16 @@ while E > 100:
     print("Iteration number: {}, error {}".format(iteration_counter, E))
 
 print("Final iteration count: {}, final error {}".format(iteration_counter, E))
+
+
+# Compressing and restoring image on counted weights
+for k in range(L):
+    Y = np.dot(Xq[k], W_first)
+    X_out[k] = np.dot(Y, W_second)
+
+# Initializing image matrices
+image_restored = np.empty((H, W, S))
+image_origin = np.empty((H, W, S))
 
 # removing unnecessary axis from arrays
 Xq = np.squeeze(Xq, axis=1)
